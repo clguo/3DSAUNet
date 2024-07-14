@@ -160,10 +160,10 @@ class TrainDataGenerator(Sequence):
         #     if np.random.rand() > 0.8:
         #         batch_images[i] = np.roll(batch_images[i], 128, axis=1)
         #         batch_masks[i] = np.roll(batch_masks[i], 128, axis=1)
-        for i in range(len(batch_images)):
-            if np.random.rand() > 0.8:
-                batch_images[i] = np.roll(batch_images[i], 16, axis=2)
-                batch_masks[i] = np.roll(batch_masks[i], 16, axis=2)
+        # for i in range(len(batch_images)):
+        #     if np.random.rand() > 0.8:
+        #         batch_images[i] = np.roll(batch_images[i], 16, axis=2)
+        #         batch_masks[i] = np.roll(batch_masks[i], 16, axis=2)
 
 class DataGenerator(Sequence):
     def __init__(self, images, masks, batch_size):
