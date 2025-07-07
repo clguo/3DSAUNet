@@ -2,77 +2,101 @@
 
 **3D SA-UNet: 3D Spatial Attention UNet with 3D Atrous Spatial Pyramid Pooling for White Matter Hyperintensities Segmentation**
 
-<div align="center">
-  <img src="3dsaunet.png" width="700"/>
-  <p><i>Figure: Overview of the proposed 3D SA-UNet architecture</i></p>
-</div>
+White Matter Hyperintensity (WMH) is a common imaging biomarker of cerebral small vessel disease and is associated with conditions such as stroke, aging, and dementia. Accurate and automatic WMH segmentation from FLAIR MRI is critical for clinical diagnosis, yet remains challenging due to small lesion size, low contrast, and high discontinuity.
 
-## Abstract
+We propose **3D SA-UNet**, a novel 3D convolutional neural network designed specifically for WMH segmentation. It integrates a **3D Spatial Attention Module (3D SAM)** and an enhanced **3D Atrous Spatial Pyramid Pooling (3D ASPP)** to improve feature representation and multi-scale context aggregation.
 
-White Matter Hyperintensity (WMH) is a key imaging biomarker associated with neurological conditions such as dementia and stroke. Automatic segmentation of WMH from MRI scans is essential for early diagnosis, but remains challenging due to low contrast, high discontinuity, and poor spatial context of lesions.
-
-To address these issues, we propose **3D SA-UNet**, a deep learning model for WMH segmentation based solely on FLAIR MRI. The model integrates a **3D Spatial Attention Module (3D SAM)** to highlight important lesion features and suppress irrelevant regions, and introduces an extended **3D Atrous Spatial Pyramid Pooling (3D ASPP)** to capture multi-scale contextual information.
-
-Experimental results demonstrate that 3D SA-UNet achieves superior segmentation accuracy compared to state-of-the-art 3D CNN-based models.
-
-> 📌 **Code**: [GitHub Repository](https://github.com/your-repo)
+> 🔬 This project is based on the paper:  
+> **Guo, Changlu.** *3D SA-UNet: 3D Spatial Attention UNet with 3D ASPP for White Matter Hyperintensities Segmentation*, arXiv preprint arXiv:2309.08402.
 
 ---
 
-## Highlights
+## 🧠 Highlights
 
-- ✅ **3D Spatial Attention Module (3D SAM):** Enhances attention to critical lesion regions in 3D volumes.
-  
+- **3D Spatial Attention Module (3D SAM):** Enhances the network's ability to focus on lesion regions while suppressing irrelevant background signals.
+- **3D Atrous Spatial Pyramid Pooling (3D ASPP):** Captures multi-scale contextual features using 3D dilated convolutions with different dilation rates.
+- **Anisotropic Convolutions:** Uses 3×3×1 kernels in encoder/decoder to better handle low z-resolution in MRI.
+- **Group Normalization:** Ensures stable training even with small batch sizes.
+- **Modular Architecture:** Follows encoder-decoder design for extensibility.
+
+---
+
+## 📐 Architecture
+
+### 3D Spatial Attention Module (3D SAM)
+
+This module applies both average and max pooling along the channel axis and uses a 3D convolution + sigmoid to generate a spatial attention map, which modulates the input features:
+
+<p align="center">
   <img src="3DSAM.png" width="600"/>
-  <p><i>Figure: Structure of the 3D Spatial Attention Module</i></p>
+  <br/>
+  <i>Figure: 3D Spatial Attention Module</i>
+</p>
 
-- ✅ **3D ASPP:** Effectively captures multi-scale context using dilated convolutions with varying receptive fields.
+### 3D Atrous Spatial Pyramid Pooling (3D ASPP)
 
+3D ASPP applies parallel 3D convolutions with different dilation rates to learn multi-scale context from 3D volumes:
+
+<p align="center">
   <img src="3daspp.png" width="600"/>
-  <p><i>Figure: 3D Atrous Spatial Pyramid Pooling for multiscale feature fusion</i></p>
+  <br/>
+  <i>Figure: 3D ASPP Module</i>
+</p>
 
-- ✅ **Efficient 3D architecture:** Utilizes anisotropic convolution (3×3×1) in encoder/decoder paths to better adapt to the anisotropic resolution of FLAIR images.
+### Full Model: 3D SA-UNet
 
-- ✅ **Group Normalization:** Improves stability in small-batch training, which is common in 3D medical image segmentation tasks.
+The overall architecture consists of encoder–decoder paths with 3D SAM in skip connections and 3D ASPP at the bottleneck:
 
----
-
-## Method Overview
-
-Our model follows an encoder–decoder structure similar to 3D U-Net. However, key innovations are:
-
-- 3D SAM modules inserted in skip connections to enhance spatial feature attention.
-- A bottleneck with 3D ASPP to capture multi-scale spatial context.
-- Asymmetric convolutions (3×3×1) in encoder/decoder paths and full 3×3×3 in bottleneck to balance performance and memory.
-- Group Normalization throughout the network to ensure stable training with small batches.
-
-The overall structure is shown below:
-
-<img src="3dsaunet.png" width="700"/>
-<p><i>Figure: 3D SA-UNet architecture with 3D SAM and 3D ASPP components</i></p>
+<p align="center">
+  <img src="3dsaunet.png" width="700"/>
+  <br/>
+  <i>Figure: Full architecture of 3D SA-UNet</i>
+</p>
 
 ---
 
-## Evaluation
+## 🧪 Evaluation Protocol
 
-Testing should follow the [official implementation](https://github.com/hjkuijf/wmhchallenge/blob/master/evaluation.py) used in the WMH Segmentation Challenge.
+To evaluate the model predictions on WMH segmentation, we recommend using the official script provided by the [WMH Segmentation Challenge (MICCAI 2017)](https://wmh.isi.uu.nl/):
 
----
-
-## Keywords
-
-> `White Matter Hyperintensity Segmentation` • `Deep Learning` • `3D CNN` • `Spatial Attention` • `ASPP` • `FLAIR MRI`
+👉 [Official Evaluation Code](https://github.com/hjkuijf/wmhchallenge/blob/master/evaluation.py)
 
 ---
 
-## Citation
+## 📂 Dataset
 
-If you use this code or find our work helpful, please consider citing:
+We use the publicly available dataset from the **WMH Segmentation Challenge**, which includes scans from:
+
+- **Utrecht**
+- **Singapore**
+- **Amsterdam** (GE3T, GE1.5T, Philips 3T)
+
+> Dataset download: [https://wmh.isi.uu.nl/](https://wmh.isi.uu.nl/)
+
+---
+
+## 📊 Results
+
+The table below compares our proposed **3D SA-UNet** with several state-of-the-art methods on WMH segmentation. † indicates results reported from original papers.
+
+| **Model**                         | **DICE ↑** | **AVD ↓** | **F1 Score ↑** |
+|----------------------------------|------------|-----------|----------------|
+| 3D U-Net       | 0.71       | 0.289     | 0.53           |
+| Attention U-Net| 0.74       | 0.206     | 0.57           |
+| MICCAI Challenge Winner†  | **0.80**  | 0.219     | **0.76**       |
+| **3D SA-UNet (Ours)**            | 0.79       | **0.174** | **0.76**       |
+
+---
+
+## 📄 Citation
+
+If you find this work helpful or use our code/models in your research, please consider citing the following paper:
 
 ```bibtex
-@article{your2024paper,
-  title={3D SA-UNet: 3D Spatial Attention UNet with 3D Atrous Spatial Pyramid Pooling for White Matter Hyperintensities Segmentation},
-  author={Your Name, et al.},
-  journal={Medical Image Analysis},
-  year={2024}
+@article{guo20233d,
+  title     = {3D SA-UNet: 3D Spatial Attention UNet with 3D ASPP for White Matter Hyperintensities Segmentation},
+  author    = {Guo, Changlu},
+  journal   = {arXiv preprint arXiv:2309.08402},
+  year      = {2023},
+  url       = {https://arxiv.org/abs/2309.08402}
 }
