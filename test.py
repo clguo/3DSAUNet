@@ -21,9 +21,9 @@ from unets import *
 # from attentionunet import AttUnet3D
 
 
-model = caunet_aspp()
+model = 3DSAUNet()
 model.summary()
-model.load_weights("models256/caunet_aspp.h5")
+model.load_weights("models256/3DSAUNet.h5")
 
 
 
