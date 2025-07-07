@@ -824,7 +824,7 @@ def saunet(n_channel=24):
 
 
 
-def saunet_aspp(n_channel=24):
+def 3DSAUNet(n_channel=24):
 
     inputs = Input((ROWS, COLS, 32, 1))
     conv1 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(inputs)
