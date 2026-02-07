@@ -400,7 +400,7 @@ def saunetwaspp(n_channel=24):
 
     return model
 
-def saunetwaspp3(n_channel=24):
+def 3DSAUNet(n_channel=24):
     inputs = Input((ROWS, COLS, 32, 1))
     conv1 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(inputs)
     conv1 = GroupNormalization(groups=8)(conv1)
@@ -747,156 +747,156 @@ def backbonewgn(n_channel=24):
 
 
 
-def saunet(n_channel=24):
-    inputs = Input((ROWS, COLS, 32, 1))
-    conv1 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(inputs)
-    conv1 = GroupNormalization(groups=8)(conv1)
-    conv1 = Activation("relu")(conv1)
-    conv1 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(conv1)
-    conv1 = GroupNormalization(groups=8)(conv1)
-    conv1 = Activation("relu")(conv1)
-    pool1 = MaxPooling3D(pool_size=(2, 2, 1))(conv1)
+# def saunet(n_channel=24):
+#     inputs = Input((ROWS, COLS, 32, 1))
+#     conv1 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(inputs)
+#     conv1 = GroupNormalization(groups=8)(conv1)
+#     conv1 = Activation("relu")(conv1)
+#     conv1 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(conv1)
+#     conv1 = GroupNormalization(groups=8)(conv1)
+#     conv1 = Activation("relu")(conv1)
+#     pool1 = MaxPooling3D(pool_size=(2, 2, 1))(conv1)
 
-    conv2 = Conv3D(n_channel*2, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(pool1)
-    conv2 = GroupNormalization(groups=8)(conv2)
-    conv2 = Activation("relu")(conv2)
+#     conv2 = Conv3D(n_channel*2, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(pool1)
+#     conv2 = GroupNormalization(groups=8)(conv2)
+#     conv2 = Activation("relu")(conv2)
 
-    conv2 = Conv3D(n_channel*2, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(conv2)
-    conv2 = GroupNormalization(groups=8)(conv2)
-    conv2 = Activation("relu")(conv2)
-    pool2 = MaxPooling3D(pool_size=(2, 2, 1))(conv2)
+#     conv2 = Conv3D(n_channel*2, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(conv2)
+#     conv2 = GroupNormalization(groups=8)(conv2)
+#     conv2 = Activation("relu")(conv2)
+#     pool2 = MaxPooling3D(pool_size=(2, 2, 1))(conv2)
 
-    conv3 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(pool2)
-    conv3 = GroupNormalization(groups=8)(conv3)
-    conv3 = Activation("relu")(conv3)
+#     conv3 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(pool2)
+#     conv3 = GroupNormalization(groups=8)(conv3)
+#     conv3 = Activation("relu")(conv3)
 
-    conv3 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(conv3)
-    conv3 = GroupNormalization(groups=8)(conv3)
-    conv3 = Activation("relu")(conv3)
-    pool3 = MaxPooling3D(pool_size=(2, 2, 1))(conv3)
-
-
-
-    convm = Conv3D(n_channel*8, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(pool3)
-    convm = GroupNormalization(groups=8)(convm)
-    convm = Activation("relu")(convm)
-    convm = Conv3D(n_channel*8, (3, 3, 13), activation=None, padding='same',kernel_initializer='he_normal')(convm)
-    convm = GroupNormalization(groups=8)(convm)
-    convm = Activation("relu")(convm)
-
-    up5 = concatenate([UpSampling3D((2, 2, 1))(convm), spatial_attention(conv3)],
-                      axis=4)
-    conv5 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(up5)
-    conv5 = GroupNormalization(groups=8)(conv5)
-    conv5 = Activation("relu")(conv5)
-
-    conv5 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(conv5)
-    conv5 = GroupNormalization(groups=8)(conv5)
-    conv5 = Activation("relu")(conv5)
-
-    up6 = concatenate([UpSampling3D((2, 2, 1))(conv5),spatial_attention(conv2)],axis=4)
-    conv6 = Conv3D(n_channel*2, (3, 3, 3), activation=None, padding='same',kernel_initializer='he_normal')(up6)
-    conv6 = GroupNormalization(groups=8)(conv6)
-    conv6 = Activation("relu")(conv6)
-
-    conv6 = Conv3D(n_channel*2, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(conv6)
-    conv6 = GroupNormalization(groups=8)(conv6)
-    conv6 = Activation("relu")(conv6)
-
-    up7 = concatenate([UpSampling3D((2, 2, 1))(conv6),spatial_attention(conv1)],axis=4)
-    conv7 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(up7)
-    conv7 = GroupNormalization(groups=8)(conv7)
-
-    conv7 = Activation("relu")(conv7)
-    conv7 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(conv7)
-    conv7 = GroupNormalization(groups=8)(conv7)
-    conv7 = Activation("relu")(conv7)
-
-    conv8 = Conv3D(3, (1, 1, 1), activation='softmax',kernel_initializer='he_normal')(conv7)
-
-    model = Model(inputs=[inputs], outputs=[conv8])
-
-    return model
+#     conv3 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(conv3)
+#     conv3 = GroupNormalization(groups=8)(conv3)
+#     conv3 = Activation("relu")(conv3)
+#     pool3 = MaxPooling3D(pool_size=(2, 2, 1))(conv3)
 
 
+
+#     convm = Conv3D(n_channel*8, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(pool3)
+#     convm = GroupNormalization(groups=8)(convm)
+#     convm = Activation("relu")(convm)
+#     convm = Conv3D(n_channel*8, (3, 3, 13), activation=None, padding='same',kernel_initializer='he_normal')(convm)
+#     convm = GroupNormalization(groups=8)(convm)
+#     convm = Activation("relu")(convm)
+
+#     up5 = concatenate([UpSampling3D((2, 2, 1))(convm), spatial_attention(conv3)],
+#                       axis=4)
+#     conv5 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(up5)
+#     conv5 = GroupNormalization(groups=8)(conv5)
+#     conv5 = Activation("relu")(conv5)
+
+#     conv5 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(conv5)
+#     conv5 = GroupNormalization(groups=8)(conv5)
+#     conv5 = Activation("relu")(conv5)
+
+#     up6 = concatenate([UpSampling3D((2, 2, 1))(conv5),spatial_attention(conv2)],axis=4)
+#     conv6 = Conv3D(n_channel*2, (3, 3, 3), activation=None, padding='same',kernel_initializer='he_normal')(up6)
+#     conv6 = GroupNormalization(groups=8)(conv6)
+#     conv6 = Activation("relu")(conv6)
+
+#     conv6 = Conv3D(n_channel*2, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(conv6)
+#     conv6 = GroupNormalization(groups=8)(conv6)
+#     conv6 = Activation("relu")(conv6)
+
+#     up7 = concatenate([UpSampling3D((2, 2, 1))(conv6),spatial_attention(conv1)],axis=4)
+#     conv7 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(up7)
+#     conv7 = GroupNormalization(groups=8)(conv7)
+
+#     conv7 = Activation("relu")(conv7)
+#     conv7 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(conv7)
+#     conv7 = GroupNormalization(groups=8)(conv7)
+#     conv7 = Activation("relu")(conv7)
+
+#     conv8 = Conv3D(3, (1, 1, 1), activation='softmax',kernel_initializer='he_normal')(conv7)
+
+#     model = Model(inputs=[inputs], outputs=[conv8])
+
+#     return model
 
 
 
 
 
-def 3DSAUNet(n_channel=24):
 
-    inputs = Input((ROWS, COLS, 32, 1))
-    conv1 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(inputs)
-    conv1 = GroupNormalization(groups=8)(conv1)
-    conv1 = Activation("relu")(conv1)
-    conv1 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(conv1)
-    conv1 = GroupNormalization(groups=8)(conv1)
-    conv1 = Activation("relu")(conv1)
-    pool1 = MaxPooling3D(pool_size=(2, 2, 1))(conv1)
+
+# def SAUNetwoaspp(n_channel=24):
+
+#     inputs = Input((ROWS, COLS, 32, 1))
+#     conv1 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(inputs)
+#     conv1 = GroupNormalization(groups=8)(conv1)
+#     conv1 = Activation("relu")(conv1)
+#     conv1 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(conv1)
+#     conv1 = GroupNormalization(groups=8)(conv1)
+#     conv1 = Activation("relu")(conv1)
+#     pool1 = MaxPooling3D(pool_size=(2, 2, 1))(conv1)
     
 
-    conv2 = Conv3D(n_channel* 2, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(pool1)
-    conv2 = GroupNormalization(groups=8)(conv2)
-    conv2 = Activation("relu")(conv2)
-    conv2 = Conv3D(n_channel*  2, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(conv2)
-    conv2 = GroupNormalization(groups=8)(conv2)
-    conv2 = Activation("relu")(conv2)
-    pool2 = MaxPooling3D(pool_size=(2, 2, 1))(conv2)
+#     conv2 = Conv3D(n_channel* 2, (3, 3, 1), activation=None, padding='same',kernel_initializer='he_normal')(pool1)
+#     conv2 = GroupNormalization(groups=8)(conv2)
+#     conv2 = Activation("relu")(conv2)
+#     conv2 = Conv3D(n_channel*  2, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(conv2)
+#     conv2 = GroupNormalization(groups=8)(conv2)
+#     conv2 = Activation("relu")(conv2)
+#     pool2 = MaxPooling3D(pool_size=(2, 2, 1))(conv2)
 
-    conv3 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(pool2)
-    conv3 = GroupNormalization(groups=8)(conv3)
-    conv3 = Activation("relu")(conv3)
-    conv3 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(conv3)
-    conv3 = GroupNormalization(groups=8)(conv3)
-    conv3 = Activation("relu")(conv3)
-    pool3 = MaxPooling3D(pool_size=(2, 2, 1))(conv3)
-
-
-
-    convm = Conv3D(n_channel*8, (3, 3, 3), activation=None, padding='same', kernel_initializer='he_normal')(pool3)
-    convm = GroupNormalization(groups=8)(convm)
-    convm = Activation("relu")(convm)
-    convm = spatial_attention(convm)
-    convm = Conv3D(n_channel*8, (3, 3, 3), activation=None, padding='same', kernel_initializer='he_normal')(convm)
-    convm = GroupNormalization(groups=8)(convm)
-    convm = Activation("relu")(convm)
+#     conv3 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(pool2)
+#     conv3 = GroupNormalization(groups=8)(conv3)
+#     conv3 = Activation("relu")(conv3)
+#     conv3 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(conv3)
+#     conv3 = GroupNormalization(groups=8)(conv3)
+#     conv3 = Activation("relu")(conv3)
+#     pool3 = MaxPooling3D(pool_size=(2, 2, 1))(conv3)
 
 
 
-    up5 = concatenate([UpSampling3D((2, 2, 1))(convm), spatial_attention(conv3)],
-                      axis=4)
-    conv5 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(up5)
-    conv5 = GroupNormalization(groups=8)(conv5)
-    conv5 = Activation("relu")(conv5)
-    conv5 = Conv3D(n_channel*4, (3, 3,1), activation=None, padding='same', kernel_initializer='he_normal')(conv5)
+#     convm = Conv3D(n_channel*8, (3, 3, 3), activation=None, padding='same', kernel_initializer='he_normal')(pool3)
+#     convm = GroupNormalization(groups=8)(convm)
+#     convm = Activation("relu")(convm)
+#     convm = spatial_attention(convm)
+#     convm = Conv3D(n_channel*8, (3, 3, 3), activation=None, padding='same', kernel_initializer='he_normal')(convm)
+#     convm = GroupNormalization(groups=8)(convm)
+#     convm = Activation("relu")(convm)
 
-    conv5 = GroupNormalization(groups=8)(conv5)
-    conv5 = Activation("relu")(conv5)
 
-    up6 = concatenate([UpSampling3D((2, 2, 1))(conv5), spatial_attention(conv2)],
-                      axis=4)
-    conv6 = Conv3D(n_channel*2, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(up6)
-    conv6 = GroupNormalization(groups=8)(conv6)
-    conv6 = Activation("relu")(conv6)
-    conv6 = Conv3D(n_channel*2, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(conv6)
-    conv6 = GroupNormalization(groups=8)(conv6)
-    conv6 = Activation("relu")(conv6)
 
-    up7 = concatenate([UpSampling3D((2, 2, 1))(conv6), spatial_attention(conv1)],
-                      axis=4)
-    conv7 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(up7)
-    conv7 = GroupNormalization(groups=8)(conv7)
-    conv7 = Activation("relu")(conv7)
-    conv7 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(conv7)
-    conv7 = GroupNormalization(groups=8)(conv7)
-    conv7 = Activation("relu")(conv7)
+#     up5 = concatenate([UpSampling3D((2, 2, 1))(convm), spatial_attention(conv3)],
+#                       axis=4)
+#     conv5 = Conv3D(n_channel*4, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(up5)
+#     conv5 = GroupNormalization(groups=8)(conv5)
+#     conv5 = Activation("relu")(conv5)
+#     conv5 = Conv3D(n_channel*4, (3, 3,1), activation=None, padding='same', kernel_initializer='he_normal')(conv5)
 
-    conv8 = Conv3D(3, (1, 1, 1), activation='softmax', kernel_initializer='he_normal')(conv7)
+#     conv5 = GroupNormalization(groups=8)(conv5)
+#     conv5 = Activation("relu")(conv5)
 
-    model = Model(inputs=[inputs], outputs=[conv8])
+#     up6 = concatenate([UpSampling3D((2, 2, 1))(conv5), spatial_attention(conv2)],
+#                       axis=4)
+#     conv6 = Conv3D(n_channel*2, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(up6)
+#     conv6 = GroupNormalization(groups=8)(conv6)
+#     conv6 = Activation("relu")(conv6)
+#     conv6 = Conv3D(n_channel*2, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(conv6)
+#     conv6 = GroupNormalization(groups=8)(conv6)
+#     conv6 = Activation("relu")(conv6)
 
-    return model
+#     up7 = concatenate([UpSampling3D((2, 2, 1))(conv6), spatial_attention(conv1)],
+#                       axis=4)
+#     conv7 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(up7)
+#     conv7 = GroupNormalization(groups=8)(conv7)
+#     conv7 = Activation("relu")(conv7)
+#     conv7 = Conv3D(n_channel, (3, 3, 1), activation=None, padding='same', kernel_initializer='he_normal')(conv7)
+#     conv7 = GroupNormalization(groups=8)(conv7)
+#     conv7 = Activation("relu")(conv7)
+
+#     conv8 = Conv3D(3, (1, 1, 1), activation='softmax', kernel_initializer='he_normal')(conv7)
+
+#     model = Model(inputs=[inputs], outputs=[conv8])
+
+#     return model
 
 
 def aspp_unet(n_channel=24):
